@@ -6,44 +6,49 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/google/wire"
 
 	"github.com/zbd20/fiber-demo/internal/biz"
 	"github.com/zbd20/fiber-demo/internal/conf"
-	"github.com/zbd20/fiber-demo/internal/db"
 	"github.com/zbd20/fiber-demo/internal/middleware"
 )
 
 var swagHandler fiber.Handler
 
+var (
+	AppSet   = wire.NewSet(NewFiber)
+	RouteSet = wire.NewSet(NewRouter)
+)
+
 type Router struct {
 	app *fiber.App
-	bc  *biz.BaseController
 }
 
-func NewRouter() *Router {
-	serverConfig := conf.GetConfig()
-	mdb, err := db.NewMySQLClient(serverConfig)
-	if err != nil {
-		log.Fatalf("new mysql client error: %v", err)
-		return nil
-	}
+func NewFiber() *fiber.App {
+	app := fiber.New(fiber.Config{
+		EnablePrintRoutes: true,
+	})
 
-	app := fiber.New()
-
-	app.Use(middleware.Page())
+	app.Use(recover.New())
 	app.Use(logger.New())
-
-	bc := biz.NewBaseController(app, mdb)
-
-	r := &Router{
-		app: app,
-		bc:  bc,
-	}
+	app.Use(middleware.Page())
+	app.Use(middleware.HealthCheck(&middleware.Config{
+		LivenessPath:  "/live",
+		ReadinessPath: "/ready",
+	}))
 
 	if swagHandler != nil {
-		app.Get("/swagger/*", swagHandler)
+		app.Group("/swagger").Get("/*", swagHandler)
 	}
-	return r
+
+	return app
+}
+
+func NewRouter(bc *biz.BaseController) *Router {
+	return &Router{
+		app: bc.App,
+	}
 }
 
 func (r *Router) Run() error {

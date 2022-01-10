@@ -1,0 +1,47 @@
+basePath: /
+definitions:
+  models.Login:
+    properties:
+      id:
+        type: integer
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: fiber@swagger.io
+    name: API Support
+  description: This is a sample swagger for Fiber
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Fiber Example API
+  version: "1.0"
+paths:
+  /demo/api/v1/login:
+    post:
+      consumes:
+      - application/json
+      description: Login Controller
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Login'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Login
+      tags:
+      - Login
+swagger: "2.0"

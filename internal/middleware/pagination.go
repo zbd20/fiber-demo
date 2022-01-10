@@ -5,7 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 
-	"gitlab.ushareit.me/sgt/hawkeye/network-monitor/src/models"
+	"github.com/zbd20/fiber-demo/internal/models"
 )
 
 func Page() fiber.Handler {

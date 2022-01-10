@@ -1,26 +1,34 @@
 package biz
 
 import (
+	"github.com/gofiber/adaptor/v2"
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/wire"
+	"github.com/heptiolabs/healthcheck"
+
 	"github.com/zbd20/fiber-demo/internal/services"
-	"gorm.io/gorm"
 )
 
+var ControllerSet = wire.NewSet(NewBaseController)
+
 type BaseController struct {
-	db *gorm.DB
-	bs *services.BaseService
-	fg fiber.Router
+	bs  *services.BaseService
+	fg  fiber.Router
+	App *fiber.App
 }
 
-func NewBaseController(app *fiber.App, db *gorm.DB) *BaseController {
+func NewBaseController(app *fiber.App, bs *services.BaseService) *BaseController {
 	rg := app.Group("/demo/api/v1")
+	app.Group("/").All("", adaptor.HTTPHandler(healthcheck.NewHandler()))
+
 
 	bc := &BaseController{
-		db: db,
-		bs: services.NewBaseService(db),
-		fg: rg,
+		bs:  bs,
+		fg:  rg,
+		App: app,
 	}
 
+	// Controllers
 	newDemoController(bc)
 
 	return bc

@@ -1,13 +1,15 @@
 package conf
 
 import (
+	"github.com/google/wire"
 	"github.com/jinzhu/configor"
 )
+
+var ConfigSet = wire.NewSet(GetConfig)
 
 type Config struct {
 	Addr  string `yaml:"addr"`
 	Debug bool   `yaml:"debug"`
-	Mode  string `yaml:"mode"`
 	DB    db     `yaml:"db"`
 	Log   log    `yaml:"log"`
 }

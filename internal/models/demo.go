@@ -16,7 +16,7 @@ type User struct {
 }
 
 func (u User) TableName() string {
-	return "sgt_test_auto_create_table"
+	return "test_auto_create_table"
 }
 
 type Login struct {
@@ -26,5 +26,5 @@ type Login struct {
 }
 
 func (l Login) TableName() string {
-	return "sgt_test_user"
+	return "test_user"
 }

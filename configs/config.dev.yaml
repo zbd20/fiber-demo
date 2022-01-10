@@ -1,0 +1,16 @@
+addr: 8080
+
+debug: true
+
+db:
+  host: "127.0.0.1:3306"
+  user: root
+  password: 123456
+  dbname: test
+  log: true
+  maxidleconns: 10
+  maxopenconns: 100
+
+log:
+  path: "./"
+  name: "test.log"

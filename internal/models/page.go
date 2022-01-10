@@ -20,18 +20,17 @@ type Result struct {
 	Message     string      `json:"message"`
 }
 
-func NewResult(count int, page *Page, msg string, data interface{}) Result {
+func NewResult(count int, page *Page, code int64, msg string, data interface{}) Result {
 	var result Result
-	var pageCount int
+
 	if page != nil {
 		result = Result{
 			TotalCount:  &count,
 			CurrentPage: &page.Page,
 			PageSize:    &page.PageSize,
-			PageCount:   &pageCount,
 			Data:        data,
 			Message:     msg,
-			Code:        0,
+			Code:        code,
 		}
 
 		pc := count / page.PageSize
@@ -47,8 +46,9 @@ func NewResult(count int, page *Page, msg string, data interface{}) Result {
 		result = Result{
 			Data:    data,
 			Message: msg,
-			Code:    0,
+			Code:    code,
 		}
+
 	}
 
 	return result
